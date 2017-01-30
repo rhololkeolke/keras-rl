@@ -367,6 +367,7 @@ class TensorboardCallback(Callback):
         if self.log_step % self.interval == 0:
             for name, value in zip(self.metrics_names, logs['metrics']):
                 if np.isnan(value):
+                    print('name', value)
                     continue
                 summary = tf.Summary()
                 summary_value = summary.value.add()
