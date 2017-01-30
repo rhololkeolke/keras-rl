@@ -375,5 +375,5 @@ class TensorboardCallback(Callback):
                 self.writer.add_summary(summary, self.log_step)
             self.writer.flush()
 
-        if self.is_training:
+        if self.model.is_training:
             self.log_step += 1
