@@ -198,7 +198,9 @@ class DQNAgent(AbstractDQNAgent):
         metrics = [np.nan for _ in self.metrics_names]
         if not self.training:
             # We're done here. No need to update the experience memory since we only use the working
-            # memory to obtain the state over the most recent observations.
+            # memory to obtain the state over the most recent
+            # observations.
+            print('Not training!')
             return metrics
 
         # Train the network on a single stochastic batch.
@@ -283,6 +285,7 @@ class DQNAgent(AbstractDQNAgent):
         if self.target_model_update >= 1 and self.step % self.target_model_update == 0:
             self.update_target_model_hard()
 
+        print('metrics', metrics)
         return metrics
 
     @property
