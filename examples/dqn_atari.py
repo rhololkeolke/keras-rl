@@ -14,7 +14,7 @@ from rl.agents.dqn import DQNAgent
 from rl.policy import LinearAnnealedPolicy, BoltzmannQPolicy, EpsGreedyQPolicy
 from rl.memory import SequentialMemory
 from rl.core import Processor
-from rl.callbacks import FileLogger, ModelIntervalCheckpoint
+from rl.callbacks import FileLogger, ModelIntervalCheckpoint, TensorboardCallback
 
 
 INPUT_SHAPE = (84, 84)
@@ -122,6 +122,7 @@ if args.mode == 'train':
     log_filename = 'dqn_{}_log.json'.format(args.env_name)
     callbacks = [ModelIntervalCheckpoint(checkpoint_weights_filename, interval=250000)]
     callbacks += [FileLogger(log_filename, interval=100)]
+    callbacks += [TensorboardCallback('dqn_{}_tensorboard'.format(args.env_name), 100)]
     dqn.fit(env, callbacks=callbacks, nb_steps=1750000, log_interval=10000)
 
     # After training is done, we save the final weights one more time.

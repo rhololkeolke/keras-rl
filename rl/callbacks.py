@@ -346,3 +346,31 @@ class ModelIntervalCheckpoint(Callback):
         if self.verbose > 0:
             print('Step {}: saving model to {}'.format(self.total_steps, filepath))
         self.model.save_weights(filepath, overwrite=True)
+
+
+class TensorboardCallback(Callback):
+    def __init__(self, filepath, interval):
+        import keras.backend as K
+        import tensorflow as tf
+
+        self.log_step = 0
+        self.interval = interval
+
+        sess = K.get_session()
+        self.writer = tf.summary.FileWriter(filepath, sess.graph)
+
+    def on_train_begin(self, logs):
+        self.metrics_names = self.model.metrics_names
+
+    def on_step_end(self, step, logs={}):
+        import tensorflow as tf
+        if self.log_step % self.interval == 0:
+            for name, value in zip(self.metrics_names, logs['metrics']):
+                summary = tf.Summary()
+                summary_value = summary.value.add()
+                summary_value.simple_value = value
+                summary_value.tag = name
+                self.writer.add_summary(summary, self.log_step)
+            self.writer.flush()
+
+        self.log_step += 1
