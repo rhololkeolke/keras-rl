@@ -366,9 +366,11 @@ class TensorboardCallback(Callback):
         import tensorflow as tf
         if self.log_step % self.interval == 0:
             for name, value in zip(self.metrics_names, logs['metrics']):
+                if np.isnan(value):
+                    continue
                 summary = tf.Summary()
                 summary_value = summary.value.add()
-                summary_value.simple_value = value
+                summary_value.simple_value = float(value)
                 summary_value.tag = name
                 self.writer.add_summary(summary, self.log_step)
             self.writer.flush()
